@@ -1,6 +1,9 @@
 import streamlit as st
 import pandas as pd
 import gspread
+import streamlit as st
+import pandas as pd
+import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from datetime import datetime
 
@@ -10,9 +13,16 @@ scope = [
     "https://www.googleapis.com/auth/drive"
 ]
 
-creds = ServiceAccountCredentials.from_json_keyfile_name(
-    "credentials.json", scope
-)
+# ---------- GOOGLE SHEETS CONNECTION (STREAMLIT SECRETS VERSION) ----------
+scope = [
+    "https://spreadsheets.google.com/feeds",
+    "https://www.googleapis.com/auth/drive"
+]
+
+# Load credentials from Streamlit Secrets (NOT credentials.json)
+creds_dict = st.secrets["gcp_service_account"]
+
+creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
 client = gspread.authorize(creds)
 
 # 🔁 Replace with your EXACT sheet file names
@@ -110,5 +120,6 @@ st.dataframe(drones)
 
 st.subheader("📁 Missions")
 st.dataframe(missions)
+
 
 
