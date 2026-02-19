@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import json
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from datetime import datetime
@@ -10,11 +11,14 @@ scope = [
     "https://www.googleapis.com/auth/drive"
 ]
 
-# Load credentials from Streamlit Secrets
-creds_dict = dict(st.secrets["gcp_service_account"])
 
-# 🔥 CRITICAL FIX: Convert escaped newlines to real newlines (fixes JWT error)
-creds_dict["private_key"] = creds_dict["private_key"].replace("\\n", "\n")
+
+# Load credentials EXACTLY as JSON (most stable method)
+creds_dict = json.loads(st.secrets["gcp_service_account_json"])
+
+creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
+client = gspread.authorize(creds)
+
 
 # Authorize Google Sheets
 creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
@@ -202,3 +206,4 @@ with tab2:
 
 with tab3:
     st.dataframe(missions, use_container_width=True)
+
