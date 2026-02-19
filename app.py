@@ -16,9 +16,10 @@ creds = ServiceAccountCredentials.from_json_keyfile_name(
 client = gspread.authorize(creds)
 
 # 🔁 Replace with your EXACT sheet file names
-pilot_sheet = client.open("pilot_roster").sheet1
-drone_sheet = client.open("drone_fleet").sheet1
-mission_sheet = client.open("missions").sheet1
+pilot_sheet = client.open_by_url("https://docs.google.com/spreadsheets/d/1PFX9Vg4MWkjG5PaqXfxRdaNWoRor6jmHmwKBZjUlwqU/edit?gid=1010487325#gid=1010487325").sheet1
+drone_sheet = client.open_by_url("https://docs.google.com/spreadsheets/d/14mCwUviXDlXcJl1_zUvu0i9SRcYhkoJ_rBjq15to2aE/edit?gid=646567280#gid=646567280").sheet1
+mission_sheet = client.open_by_url("https://docs.google.com/spreadsheets/d/1rqMJ86YV5G4WXTuXwo1AA8N-iNvL_NDdzV4AcOYQUCw/edit?gid=550071242#gid=550071242").sheet1
+
 
 # ---------- LOAD DATA ----------
 def load_data():
@@ -109,4 +110,5 @@ st.dataframe(drones)
 
 st.subheader("📁 Missions")
 st.dataframe(missions)
+
 
