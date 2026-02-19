@@ -4,22 +4,22 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from datetime import datetime
 
-# ---------- GOOGLE SHEETS CONNECTION (STREAMLIT SECRETS FINAL) ----------
+# ---------- GOOGLE SHEETS CONNECTION (FINAL WORKING VERSION) ----------
 scope = [
     "https://spreadsheets.google.com/feeds",
     "https://www.googleapis.com/auth/drive"
 ]
 
+# Convert Streamlit secrets to a normal dictionary (VERY IMPORTANT)
+creds_dict = dict(st.secrets["gcp_service_account"])
 
-# Load credentials from Streamlit Secrets (TOML format)
-creds_dict = st.secrets["gcp_service_account"]
-
-# Fix newline issue in private key (VERY IMPORTANT)
+# Fix private key newline issue safely (now allowed because it's a normal dict)
 creds_dict["private_key"] = creds_dict["private_key"].replace("\\n", "\n")
 
-# Authorize client
+# Authorize Google Sheets client
 creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
 client = gspread.authorize(creds)
+
 
 # ---------- OPEN GOOGLE SHEETS (USE CLEAN URL ONLY) ----------
 pilot_sheet = client.open_by_url(
@@ -203,5 +203,6 @@ with tab2:
 
 with tab3:
     st.dataframe(missions, use_container_width=True)
+
 
 
