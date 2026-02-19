@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-import json
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from datetime import datetime
@@ -12,15 +11,13 @@ scope = [
 ]
 
 
+# Load credentials from Streamlit Secrets (TOML format)
+creds_dict = st.secrets["gcp_service_account"]
 
-# Load credentials EXACTLY as JSON (most stable method)
-creds_dict = json.loads(st.secrets["gcp_service_account_json"])
+# Fix newline issue in private key (VERY IMPORTANT)
+creds_dict["private_key"] = creds_dict["private_key"].replace("\\n", "\n")
 
-creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
-client = gspread.authorize(creds)
-
-
-# Authorize Google Sheets
+# Authorize client
 creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
 client = gspread.authorize(creds)
 
@@ -206,4 +203,5 @@ with tab2:
 
 with tab3:
     st.dataframe(missions, use_container_width=True)
+
 
